@@ -36,7 +36,14 @@ env/
 # Pytest
 .pytest_cache/
 .coverage
+coverage.xml
 htmlcov/
+
+# Ruff
+.ruff_cache/
+
+# Kiro
+.kiro/
 
 # Jupyter
 .ipynb_checkpoints/

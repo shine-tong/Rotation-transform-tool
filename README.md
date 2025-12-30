@@ -1,5 +1,7 @@
 # 3D旋转变换工具库
 
+![CI](https://github.com/shine-tong/Rotation-transform-tool/actions/workflows/ci.yml/badge.svg)
+
 一个用于3D空间旋转和变换计算的Python工具库，包含旋转矩阵、欧拉角、四元数、齐次变换等常用功能。
 
 ## 功能特性

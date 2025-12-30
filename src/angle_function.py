@@ -23,7 +23,7 @@ def rotx(angle):
         [0.0, np.cos(angle), -np.sin(angle)],
         [0.0, np.sin(angle), np.cos(angle)]
     ])
-    
+
     return mat
 
 def roty(angle):
@@ -37,7 +37,7 @@ def roty(angle):
         [0.0, 1.0, 0.0],
         [-np.sin(angle), 0.0, np.cos(angle)]
     ])
-    
+
     return mat
 
 def rotz(angle):
@@ -50,8 +50,8 @@ def rotz(angle):
         [np.cos(angle), -np.sin(angle), 0.0],
         [np.sin(angle), np.cos(angle), 0.0],
         [0.0, 0.0, 1.0]
-    ])    
-    
+    ])
+
     return mat
 
 def euler_to_rot(euler_angles, order="rxyz"):
@@ -70,12 +70,12 @@ def euler_to_rot(euler_angles, order="rxyz"):
     for i in range(3):          # 按照给定的旋转顺序进行旋转
         axis = order[i + 1]
         mat = map_matrix[axis](euler_angles[i])
-        
+
         if is_static:
             res = mat @ res     # 外旋，新旋转矩阵左乘当前矩阵
         else:
             res = res @ mat     # 内旋，新旋转矩阵右乘当前矩阵
-            
+
     return res
 
 def hat(axis):
@@ -91,7 +91,7 @@ def hat(axis):
         [axis[2], 0.0, -axis[0]],
         [-axis[1], axis[0], 0.0]
     ])
-    
+
     return mat
 
 def rotk(axis, angle):
@@ -104,7 +104,7 @@ def rotk(axis, angle):
     """
     hat_mat = hat(axis)
     mat = np.eye(3) + np.sin(angle) * hat_mat + (1 - np.cos(angle)) * (hat_mat @ hat_mat)
-    
+
     return mat
 
 def quat_to_rot(quat):
@@ -116,17 +116,17 @@ def quat_to_rot(quat):
     quat = quat / np.linalg.norm(quat)
     qw, qx, qy, qz = quat
     rot = np.array([
-        [1 - 2 * qy ** 2 - 2 * qz ** 2, 
-         2 * qx * qy - 2 * qz * qw, 
+        [1 - 2 * qy ** 2 - 2 * qz ** 2,
+         2 * qx * qy - 2 * qz * qw,
          2 * qx * qz + 2 * qy * qw],
-        [2 * qx * qy + 2 * qz * qw, 
-         1 - 2 * qx ** 2 - 2 * qz ** 2, 
+        [2 * qx * qy + 2 * qz * qw,
+         1 - 2 * qx ** 2 - 2 * qz ** 2,
          2 * qy * qz - 2 * qx * qw],
-        [2 * qx * qz - 2 * qy * qw, 
-         2 * qy * qz + 2 * qx * qw, 
+        [2 * qx * qz - 2 * qy * qw,
+         2 * qy * qz + 2 * qx * qw,
          1 - 2 * qx ** 2 - 2 * qy ** 2]
     ])
-    
+
     return rot
 
 def rot_to_quat(rot):
@@ -143,7 +143,7 @@ def rot_to_quat(rot):
     qz = (rot[1, 0] - rot[0, 1]) / (4 * qw)
     res = np.array([qw, qx, qy, qz])
     res = res / np.linalg.norm(res)
-    
+
     return res
 
 def rot_inv(R):
@@ -178,8 +178,8 @@ def axis_angle(expc3):
     :return: 轴向量和角度
     """
     norm = np.linalg.norm(expc3)    # 计算向量范数
-    axis= expc3.copy() / norm         # 归一化向量作为旋转轴 
-    angle = norm         
+    axis= expc3.copy() / norm         # 归一化向量作为旋转轴
+    angle = norm
 
     return axis, angle
 
@@ -203,7 +203,7 @@ def matrix_log3(R):
     """
     angle = np.arccos((np.trace(R) - 1) / 2)    # 计算旋转角度
     omega = 1.0 / (2 * np.sin(angle)) * (R - R.transpose())
-    
+
     return angle * omega
 
 def rp_to_trans(R, p):
@@ -216,18 +216,18 @@ def rp_to_trans(R, p):
     trans = np.eye(4)
     trans[:3, :3] = R
     trans[:3, 3] = p
-    
+
     return trans
 
 def trans_to_rp(trans):
     """
-    将齐次变换矩阵转换为旋转矩阵 + 平移向量 
+    将齐次变换矩阵转换为旋转矩阵 + 平移向量
     :param trans: 4x4 齐次变换矩阵
     :return: 旋转矩阵和平移向量
     """
     R = trans[:3, :3]
     p = trans[:3, 3]
-    
+
     return R, p
 
 def trans_inv(trans):
@@ -265,7 +265,7 @@ def se3_to_vec6(se3_mat):
     vec6 = np.zeros(6)
     vec6[:3] = omega
     vec6[3:] = vbec
-    
+
     return vec6
 
 def adjoint_mat(trans):
@@ -294,10 +294,10 @@ def screw_to_axis(q, s, h):
     omega = s / np.linalg.norm(s)
     vec6[:3] = omega
     vec6[3:] = -np.cross(omega, q) + h * omega
-    
+
     return vec6
 
-def axis_angle(expc6):
+def axis_angle6(expc6):
     """
     将旋转向量转换为旋转轴和旋转角度
     :param expc6: 六维旋转向量，前三个元素表示旋转向量
@@ -305,7 +305,7 @@ def axis_angle(expc6):
     """
     angle = np.linalg.norm(expc6[:3])
     S = expc6 / angle
-    
+
     return S, angle
 
 def matrix_to_exp6(se3_mat):
@@ -325,7 +325,7 @@ def matrix_to_exp6(se3_mat):
     trans[:3, 3] = (
         np.eye(3) * angle + hat(omega) * (1 - np.cos(angle)) + hat(omega) @ hat(omega) * (angle - np.sin(angle))
     ) @ v
-    
+
     return trans
 
 def matrix_log6(trans):
@@ -342,9 +342,9 @@ def matrix_log6(trans):
     v = (
         (1.0 / angle) * (np.eye(3) - 0.5 * hat(omega) + (1.0 / angle - 1.0 / 2.0 * 1.0 / np.tan(angle / 2.0)) * hat(omega) @ hat(omega))
     ) @ p
-    
+
     se3_mat = np.zeros((4, 4))
     se3_mat[:3, :3] = hat(omega) * angle
     se3_mat[:3, 3] = v * angle
-    
+
     return se3_mat
